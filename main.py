@@ -24,3 +24,12 @@ TESSERACT_CONFIG = "--oem 3 --psm 6"
 # Set up logging
 logging.basicConfig(filename='paperiq.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
+
+# --- HELPER FUNCTIONS ---
+def extract_text_from_pdf(pdf_path):
+    """
+    Extract text using pdfplumber. For pages with minimal text,
+    fall back to OCR using pdf2image and pytesseract.
+    Also attempts to extract images (diagrams) from the PDF.
+    """
+    pass  
