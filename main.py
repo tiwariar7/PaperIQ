@@ -33,3 +33,26 @@ def extract_text_from_pdf(pdf_path):
     Also attempts to extract images (diagrams) from the PDF.
     """
     pass  
+
+def extract_text_from_pdf(pdf_path):
+    """
+    Extract text using pdfplumber. For pages with minimal text,
+    fall back to OCR using pdf2image and pytesseract.
+    Also attempts to extract images (diagrams) from the PDF.
+    """
+    full_text = ""
+    images_for_diagrams = []  # List to store temporary image file paths
+
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            for i, page in enumerate(pdf.pages):
+                page_text = page.extract_text()
+                # We'll decide next what to do with pages having little text
+                if not page_text or len(page_text.strip()) < 20:
+                    pass  # To be implemented in next part
+                else:
+                    full_text += "\n" + page_text
+    except Exception as e:
+        logging.error(f"Error processing {pdf_path}: {e}")
+    return full_text, images_for_diagrams
+
