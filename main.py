@@ -13,12 +13,12 @@ import logging
 import json  # Added import
 
 # --- CONFIGURATION ---
-SIMILARITY_THRESHOLD = 85  # For fuzzy matching duplicate questions
-CSV_PATH = "sorted_pdfs.csv"  # CSV file with headers: Department, Branch, Semester, Subject, FullPath
-INPUT_DIR = "sorted_pdfs"     # Base directory where PDFs are located
-OUTPUT_JSON_DIR = "sorted_json"  # Output directory for generated JSON files
+SIMILARITY_THRESHOLD = 85
+CSV_PATH = "sorted_pdfs.csv"  
+INPUT_DIR = "sorted_pdfs"     
+OUTPUT_JSON_DIR = "sorted_json"  
 
-# Tesseract configuration (customize if needed)
+# Tesseract configuration 
 TESSERACT_CONFIG = "--oem 3 --psm 6"
 
 # Set up logging
@@ -64,21 +64,16 @@ def extract_subquestions(question_block):
     # Split on subquestion markers: e.g. lines that start with optional whitespace then '(' followed by letters or roman numerals and ')'
     subpattern = r'(?m)^\s*\(([a-zivx]+)\)'
     parts = re.split(subpattern, question_block)
-    # If no subquestion markers are found, return the whole block as one item.
     if len(parts) <= 1:
         return [question_block.strip()]
     else:
         subquestions = []
-        # The first element might be the header (main part) before the first marker.
         header = parts[0].strip()
-        # Iterate over captured markers and their corresponding text.
-        # re.split returns a list where odd indices are the markers.
         for i in range(1, len(parts), 2):
             marker = parts[i].strip()
             content = parts[i+1].strip() if (i+1) < len(parts) else ""
             full_text = f"({marker}) {content}"
             subquestions.append(full_text)
-        # Optionally, if header text exists (and is not just punctuation), prepend it.
         if header:
             subquestions.insert(0, header)
         return subquestions
