@@ -61,7 +61,6 @@ def extract_subquestions(question_block):
     Split a question block into subquestions if markers such as (a), (b), etc. are present.
     The regex looks for markers at the beginning of a line.
     """
-    # Split on subquestion markers: e.g. lines that start with optional whitespace then '(' followed by letters or roman numerals and ')'
     subpattern = r'(?m)^\s*\(([a-zivx]+)\)'
     parts = re.split(subpattern, question_block)
     if len(parts) <= 1:
@@ -77,3 +76,6 @@ def extract_subquestions(question_block):
         if header:
             subquestions.insert(0, header)
         return subquestions
+
+if __name__ == "__main__":
+    main()
