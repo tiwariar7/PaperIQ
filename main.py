@@ -56,3 +56,29 @@ def extract_text_from_pdf(pdf_path):
         logging.error(f"Error processing {pdf_path}: {e}")
     return full_text, images_for_diagrams
 
+def extract_subquestions(question_block):
+    """
+    Split a question block into subquestions if markers such as (a), (b), etc. are present.
+    The regex looks for markers at the beginning of a line.
+    """
+    # Split on subquestion markers: e.g. lines that start with optional whitespace then '(' followed by letters or roman numerals and ')'
+    subpattern = r'(?m)^\s*\(([a-zivx]+)\)'
+    parts = re.split(subpattern, question_block)
+    # If no subquestion markers are found, return the whole block as one item.
+    if len(parts) <= 1:
+        return [question_block.strip()]
+    else:
+        subquestions = []
+        # The first element might be the header (main part) before the first marker.
+        header = parts[0].strip()
+        # Iterate over captured markers and their corresponding text.
+        # re.split returns a list where odd indices are the markers.
+        for i in range(1, len(parts), 2):
+            marker = parts[i].strip()
+            content = parts[i+1].strip() if (i+1) < len(parts) else ""
+            full_text = f"({marker}) {content}"
+            subquestions.append(full_text)
+        # Optionally, if header text exists (and is not just punctuation), prepend it.
+        if header:
+            subquestions.insert(0, header)
+        return subquestions
