@@ -77,5 +77,19 @@ def extract_subquestions(question_block):
             subquestions.insert(0, header)
         return subquestions
 
+def extract_questions(text):
+    """
+    Extract full question blocks from the text and then further split into subquestions.
+    It matches from a line that starts with a question number (e.g., "1.") until the next such line or end of text.
+    """
+    pattern = r'(?sm)^\s*\d+\.\s*(.*?)(?=^\s*\d+\.\s*|\Z)'
+    blocks = re.findall(pattern, text)
+    all_questions = []
+    for block in blocks:
+        subqs = extract_subquestions(block)
+        all_questions.extend(subqs)
+    logging.info(f"Extracted questions: {all_questions}")
+    return all_questions
+
 if __name__ == "__main__":
     main()
